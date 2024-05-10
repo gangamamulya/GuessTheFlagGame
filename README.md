@@ -62,6 +62,11 @@ See Guess the Flag game in action:
 https://github.com/gangamamulya/GuessTheFlagGame/assets/88301130/42661b7d-5f52-43a6-ad67-4aa9a5fb0469
 
 
+See Guess the Flag game in action after updating the UI
+https://github.com/gangamamulya/GuessTheFlagGame/assets/88301130/502337cd-024f-4976-84c5-e5fcfe0590e7
+
+
+
 
 ## Contact
 
