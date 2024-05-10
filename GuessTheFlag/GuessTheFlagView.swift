@@ -7,134 +7,87 @@
 
 import SwiftUI
 
-struct GuessTheFlagView: View {
-   @State private var countries = ["Estonia","France", "Germany", "Ireland", "Italy", "Monaco", "Monaco", "Nigeria", "Poland", "Spain", "UK","Ukraine", "US"].shuffled()
-   @State private var correctAnswer = Int.random(in: 0...2)
-    @State private var scoreTitle = ""
+struct ContentView: View {
+    @State private var countries = ["Estonia", "France", "Germany", "Ireland", "Italy", "Nigeria", "Poland", "Spain", "UK", "Ukraine", "US"].shuffled()
+    @State private var correctAnswer = Int.random(in: 0...2)
+
     @State private var showingScore = false
-    @State private var showingQuitView = false
-    @State private var score = 0
-    
+    @State private var scoreTitle = ""
+
     var body: some View {
         ZStack {
-            LinearGradient(colors: [.green.opacity(0.8), .white], startPoint: .top, endPoint: .bottom)
+            RadialGradient(stops: [
+                .init(color: Color(red: 0.1, green: 0.2, blue: 0.45), location: 0.3),
+                .init(color: Color(red: 0.76, green: 0.15, blue: 0.26), location: 0.3)
+            ], center: .top, startRadius: 200, endRadius: 700)
                 .ignoresSafeArea()
+
             VStack {
-                VStack(spacing: 30) {
-                    HStack {
+                Spacer()
+
+                Text("Guess the Flag")
+                    .font(.largeTitle.bold())
+                    .foregroundStyle(.white)
+
+                VStack(spacing: 15) {
+                    VStack {
                         Text("Tap the flag of")
-                            .font(.largeTitle.weight(.semibold))
-                            .fontDesign(.serif)
-                            .shadow(color: .green, radius: 12, x: 0, y: 0)
+                            .foregroundStyle(.secondary)
+                            .font(.subheadline.weight(.heavy))
+
                         Text(countries[correctAnswer])
                             .font(.largeTitle.weight(.semibold))
-                            .fontDesign(.serif)
-                            .shadow(color: .green, radius: 12, x: 0, y: 0)
                     }
-                    
-                    ForEach(0..<3) { index in
+
+                    ForEach(0..<3) { number in
                         Button {
-                            
-                            flagTapped(index)
-                            
+                            flagTapped(number)
                         } label: {
-                            Image(countries[index])
+                            Image(countries[number])
+                                .clipShape(.capsule)
+                                .shadow(radius: 5)
                         }
-                        
                     }
                 }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 20)
+                .background(.regularMaterial)
+                .clipShape(.rect(cornerRadius: 20))
+
+                Spacer()
+                Spacer()
+
+                Text("Score: ???")
+                    .foregroundStyle(.white)
+                    .font(.title.bold())
+
+                Spacer()
             }
-        }.alert(scoreTitle, isPresented: $showingScore) {
+            .padding()
+        }
+        .alert(scoreTitle, isPresented: $showingScore) {
             Button("Continue", action: askQuestion)
-            Button("Quit") {
-                showingQuitView = true
-            }
         } message: {
-            Text("Your score is \(score)")
+            Text("Your score is ???")
         }
-        .fullScreenCover(isPresented: $showingQuitView) {
-            QuitView(score: score, onDismiss: {
-                showingQuitView = false
-                resetGame()
-            })
-        }
-        
     }
-    
-    func flagTapped(_ num: Int) {
-        if num == correctAnswer {
-            scoreTitle = "Correct answer"
-            score += 1
+
+    func flagTapped(_ number: Int) {
+        if number == correctAnswer {
+            scoreTitle = "Correct"
+        } else {
+            scoreTitle = "Wrong"
         }
-        else {
-            scoreTitle = "Wrong answer"
-            score -= 1
-        }
+
         showingScore = true
     }
-    
-    func askQuestion() {
-        countries = countries.shuffled()
-        correctAnswer = Int.random(in: 0...2)
-        
-    }
-    
-    func resetGame() {
-        score = 0
-        askQuestion()
-    }
-}
 
-struct QuitView: View {
-     var score: Int
-    @State var navigateToGame = true
-    var onDismiss: () -> Void
-    var body: some View {
-        ZStack {
-            AngularGradient(
-                gradient: Gradient(colors: [
-                    .purple.opacity(0.7),
-                    .blue.opacity(0.8),
-                    .cyan.opacity(0.9),
-                    .green.opacity(4.8),
-                    .yellow.opacity(5.0),
-                    .orange.opacity(4.8),
-                    .red.opacity(0.7)
-                ]),
-                center: .center
-            )
-            .ignoresSafeArea()
-            
-            VStack(spacing: 20) {
-                VStack {
-                    Text("Had fun???")
-                        .bold()
-                        .font(.largeTitle)
-                        .shadow(color: .red, radius: 0.4, x: 0,y: 0)
-                }
-                HStack {
-                    Text("Your total score is")
-                        .foregroundStyle(.white)
-                        .fontDesign(.serif)
-                        .font(.headline.weight(.heavy))
-                    Text("\(score)")
-                        .foregroundStyle(.white)
-                }
-                .padding(60)
-                .background(.ultraThinMaterial)
-                .cornerRadius(12)
-                
-                Button("Wanna play again?", systemImage: "arrowshape.turn.up.forward.fill") {
-                    onDismiss()
-                }
-                .foregroundStyle(.white)
-                .buttonStyle(.plain)
-                
-            }
-        }
+    func askQuestion() {
+        countries.shuffle()
+        correctAnswer = Int.random(in: 0...2)
     }
 }
 
 #Preview {
-    GuessTheFlagView()
+    ContentView()
 }
