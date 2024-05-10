@@ -55,7 +55,7 @@ struct GuessTheFlagView: View {
         .fullScreenCover(isPresented: $showingQuitView) {
             QuitView(score: score, onDismiss: {
                 showingQuitView = false
-                askQuestion()
+                resetGame()
             })
         }
         
@@ -77,6 +77,11 @@ struct GuessTheFlagView: View {
         countries = countries.shuffled()
         correctAnswer = Int.random(in: 0...2)
         
+    }
+    
+    func resetGame() {
+        score = 0
+        askQuestion()
     }
 }
 
